@@ -60,9 +60,13 @@ GnomeHintsSettings::GnomeHintsSettings()
     g_log_set_handler("Gtk", G_LOG_LEVEL_MESSAGE, gtkMessageHandler, NULL);
 
     // Check if this is a Cinnamon session to use additionally a different setting scheme
-    if (qgetenv("XDG_CURRENT_DESKTOP").toLower() == QStringLiteral("x-cinnamon")) {
+    const auto currentDesktop = qgetenv("XDG_CURRENT_DESKTOP").toLower();
+    if (currentDesktop == QStringLiteral("x-cinnamon")) {
         m_fallbackSettings = m_desktopSettings;
         m_desktopSettings = g_settings_new("org.cinnamon.desktop.interface");
+    } else if (currentDesktop == QStringLiteral("mate")) {
+        m_fallbackSettings = m_desktopSettings;
+        m_desktopSettings = g_settings_new("org.mate.interface");
     }
 
     // Get current theme and variant
